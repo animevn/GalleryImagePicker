@@ -1,14 +1,19 @@
 package com.haanhgs.galleryimagepicker;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,10 +21,18 @@ import java.io.FileNotFoundException;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int REQUEST = 999;
     private ImageView ivImage;
     private TextView tvUri;
     private TextView tvReal;
+    private Button bnChange;
 
+    private void initialiseView(){
+        ivImage = findViewById(R.id.ivImage);
+        tvUri = findViewById(R.id.tvUri);
+        tvReal = findViewById(R.id.tvReal);
+        bnChange = findViewById(R.id.bnChange);
+    }
 
     static Bitmap decodeUri(Context context, Uri uri, final int size)throws FileNotFoundException{
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -44,8 +57,8 @@ public class MainActivity extends AppCompatActivity {
     static String getRealPathFromUri(Context context, Uri uri){
         Cursor cursor = null;
         try{
-            String[]temp = {MediaStore.Images.Media.DATA};
-            cursor = context.getContentResolver().query(uri, temp, null, null,null);
+            String[]projection = {MediaStore.Images.Media.DATA};
+            cursor = context.getContentResolver().query(uri, projection, null, null,null);
             if (cursor != null){
                 int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                 cursor.moveToFirst();
@@ -63,5 +76,46 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        initialiseView();
+        bnChange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(intent, REQUEST);
+            }
+        });
+    }
+
+    private void loadImageFromUri(Intent intent){
+        if (intent != null){
+            try{
+                Uri uri = intent.getData();
+                if (uri != null){
+                    tvUri.setText(String.format("%s", "Uri path: " + uri.toString()));
+                    String realPath = getRealPathFromUri(MainActivity.this, uri);
+                    tvReal.setText(String.format("%s", "Real path: " + realPath));
+                    Bitmap bitmap = decodeUri(MainActivity.this, uri, 300);
+                    if (bitmap != null){
+                        ivImage.setImageBitmap(bitmap);
+                    }
+                }
+
+            }catch (FileNotFoundException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case REQUEST:
+                if (resultCode == RESULT_OK){
+                    loadImageFromUri(data);
+                }
+        }
     }
 }

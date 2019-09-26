@@ -26,23 +26,18 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvUri;
     private TextView tvReal;
     private Button bnChange;
+    private Button bnShare;
+    private Uri uri;
 
     private void initialiseView(){
         ivImage = findViewById(R.id.ivImage);
         tvUri = findViewById(R.id.tvUri);
         tvReal = findViewById(R.id.tvReal);
         bnChange = findViewById(R.id.bnChange);
+        bnShare = findViewById(R.id.bnShare);
     }
 
-
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        initialiseView();
+    private void onButtonChangeClick(){
         bnChange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,6 +46,29 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST);
             }
         });
+    }
+
+    private void onButtonShareClick(){
+        bnShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("image/*");
+                intent.putExtra(Intent.EXTRA_STREAM, uri);
+                startActivity(Intent.createChooser(intent, "Choose an app to share"));
+            }
+        });
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        initialiseView();
+
+        onButtonChangeClick();
+        onButtonShareClick();
+
     }
 
     static Bitmap decodeUri(Context context, Uri uri, final int size)throws FileNotFoundException{
@@ -92,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadImageFromUri(Intent intent){
         if (intent != null){
-            Uri uri = intent.getData();
+            uri = intent.getData();
             if (uri != null){
                 try{
                     tvUri.setText(String.format("%s", "Uri path: " + uri.toString()));

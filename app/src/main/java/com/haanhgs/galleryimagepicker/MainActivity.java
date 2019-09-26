@@ -34,6 +34,25 @@ public class MainActivity extends AppCompatActivity {
         bnChange = findViewById(R.id.bnChange);
     }
 
+
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        initialiseView();
+        bnChange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(intent, REQUEST);
+            }
+        });
+    }
+
     static Bitmap decodeUri(Context context, Uri uri, final int size)throws FileNotFoundException{
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -71,39 +90,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        initialiseView();
-        bnChange.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                startActivityForResult(intent, REQUEST);
-            }
-        });
-    }
-
     private void loadImageFromUri(Intent intent){
         if (intent != null){
-            try{
-                Uri uri = intent.getData();
-                if (uri != null){
+            Uri uri = intent.getData();
+            if (uri != null){
+                try{
                     tvUri.setText(String.format("%s", "Uri path: " + uri.toString()));
                     String realPath = getRealPathFromUri(MainActivity.this, uri);
                     tvReal.setText(String.format("%s", "Real path: " + realPath));
                     Bitmap bitmap = decodeUri(MainActivity.this, uri, 300);
-                    if (bitmap != null){
-                        ivImage.setImageBitmap(bitmap);
-                    }
+                    if (bitmap != null) ivImage.setImageBitmap(bitmap);
+                }catch (FileNotFoundException e){
+                    e.printStackTrace();
+                    tvUri.setText(String.format("%s", "file not found"));
                 }
-
-            }catch (FileNotFoundException e){
-                e.printStackTrace();
             }
         }
     }
@@ -111,11 +111,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode){
-            case REQUEST:
-                if (resultCode == RESULT_OK){
-                    loadImageFromUri(data);
-                }
+        if (requestCode == REQUEST && resultCode == RESULT_OK){
+            loadImageFromUri(data);
         }
     }
 }

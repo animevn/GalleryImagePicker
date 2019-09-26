@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">GalleryImagePicker</string>
+    <string name="bnChange">Change Image</string>
+    <string name="ivImageDescription">for no error</string>
+</resources>

@@ -2,10 +2,8 @@ package com.haanhgs.galleryimagepicker;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,7 +14,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import java.io.FileNotFoundException;
 
 public class MainActivity extends AppCompatActivity {
@@ -71,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @SuppressWarnings("SameParameterValue")
     static Bitmap decodeUri(Context context, Uri uri, final int size)throws FileNotFoundException{
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;

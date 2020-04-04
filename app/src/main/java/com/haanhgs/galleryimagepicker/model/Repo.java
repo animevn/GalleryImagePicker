@@ -7,12 +7,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.text.TextUtils;
+
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
 import androidx.lifecycle.MutableLiveData;
 
 public class Repo {
@@ -76,7 +77,7 @@ public class Repo {
             Uri uri = intent.getData();
             if (uri != null){
                 try{
-                    model.setUri(uri.toString());
+                    model.setUri(uri);
                     model.setPath(getRealPathFromUri(uri));
                     model.setImg(decodeUri(uri));
                 }catch (FileNotFoundException e){
@@ -85,6 +86,17 @@ public class Repo {
             }
             liveData.postValue(model);
         });
+    }
+
+    public void shareData(){
+        if (model.getUri() != null){
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType(Constants.IMAGE_TYPE);
+            intent.putExtra(Intent.EXTRA_STREAM, model.getUri());
+            Intent chooserIntent = Intent.createChooser(intent, Constants.CHOOSE_IMAGE);
+            chooserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(chooserIntent);
+        }
     }
 
 }

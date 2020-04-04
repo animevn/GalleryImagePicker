@@ -1,18 +1,19 @@
 package com.haanhgs.galleryimagepicker.model;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 public class Model {
 
-    private String uri = "";
+    private Uri uri = null;
     private String path = "";
     private Bitmap img = null;
 
-    public String getUri() {
+    public Uri getUri() {
         return uri;
     }
 
-    public void setUri(String uri) {
+    public void setUri(Uri uri) {
         this.uri = uri;
     }
 

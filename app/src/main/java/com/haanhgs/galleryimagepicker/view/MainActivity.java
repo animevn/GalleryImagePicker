@@ -12,10 +12,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.haanhgs.galleryimagepicker.R;
 import com.haanhgs.galleryimagepicker.model.Constants;
+import com.haanhgs.galleryimagepicker.model.Model;
 import com.haanhgs.galleryimagepicker.model.Repo;
+import com.haanhgs.galleryimagepicker.viewmodel.ViewModel;
+
 import java.io.FileNotFoundException;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -33,7 +38,16 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.bnShare)
     Button bnShare;
 
-    private Uri uri;
+    private ViewModel viewModel;
+
+    private void initViewModel(){
+        viewModel = new ViewModelProvider(this).get(ViewModel.class);
+        viewModel.getData().observe(this, model -> {
+            tvReal.setText(model.getPath());
+            if (model.getUri() != null) tvUri.setText(model.getUri().toString());
+            if (model.getImg() != null) ivImage.setImageBitmap(model.getImg());
+        });
+    }
 
     private void hideActionBarInLandscapeMode(){
         int rotation = getWindowManager().getDefaultDisplay().getRotation();
@@ -50,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         hideActionBarInLandscapeMode();
+        initViewModel();
     }
 
     private void openGallery(){
@@ -58,23 +73,12 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, Constants.REQUEST);
     }
 
-    private void loadImageFromGallery(Intent intent){
-
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constants.REQUEST &&resultCode == RESULT_OK && data != null){
-            loadImageFromGallery(data);
+            viewModel.updateModel(data);
         }
-    }
-
-    private void shareImage(){
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("image/*");
-        intent.putExtra(Intent.EXTRA_STREAM, uri);
-        startActivity(Intent.createChooser(intent, "Choose app to share image"));
     }
 
     @OnClick({R.id.bnChange, R.id.bnShare})
@@ -84,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 openGallery();
                 break;
             case R.id.bnShare:
-                shareImage();
+                viewModel.shareData();
                 break;
         }
     }

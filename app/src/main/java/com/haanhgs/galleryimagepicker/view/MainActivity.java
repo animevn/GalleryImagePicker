@@ -10,10 +10,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.haanhgs.galleryimagepicker.R;
+import com.haanhgs.galleryimagepicker.model.Constants;
 import com.haanhgs.galleryimagepicker.model.Repo;
-
 import java.io.FileNotFoundException;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.bnShare)
     Button bnShare;
 
-    private static final int REQUEST = 999;
     private Uri uri;
 
     private void hideActionBarInLandscapeMode(){
@@ -56,28 +54,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void openGallery(){
         Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        startActivityForResult(intent, REQUEST);
+        intent.setType(Constants.IMAGE_TYPE);
+        startActivityForResult(intent, Constants.REQUEST);
     }
 
     private void loadImageFromGallery(Intent intent){
-        uri = intent.getData();
-        if (uri != null){
-            try{
-                tvUri.setText(uri.toString());
-                tvReal.setText(Repo.getRealPathFromUri(this, uri));
-                Bitmap bitmap = Repo.decodeUri(this, uri, 500);
-                if (bitmap != null)ivImage.setImageBitmap(bitmap);
-            }catch (FileNotFoundException e){
-                e.printStackTrace();
-            }
-        }
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST &&resultCode == RESULT_OK && data != null){
+        if (requestCode == Constants.REQUEST &&resultCode == RESULT_OK && data != null){
             loadImageFromGallery(data);
         }
     }

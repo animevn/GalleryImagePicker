@@ -1,8 +1,6 @@
 package com.haanhgs.galleryimagepicker.view;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Surface;
 import android.view.View;
@@ -12,14 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.haanhgs.galleryimagepicker.R;
 import com.haanhgs.galleryimagepicker.model.Constants;
-import com.haanhgs.galleryimagepicker.model.Model;
-import com.haanhgs.galleryimagepicker.model.Repo;
 import com.haanhgs.galleryimagepicker.viewmodel.ViewModel;
 
-import java.io.FileNotFoundException;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;

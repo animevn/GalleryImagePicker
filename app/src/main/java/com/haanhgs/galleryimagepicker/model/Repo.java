@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -18,9 +17,9 @@ import androidx.lifecycle.MutableLiveData;
 
 public class Repo {
 
-    private Context context;
-    private Model model = new Model();
-    private MutableLiveData<Model> liveData = new MutableLiveData<>();
+    private final Context context;
+    private final Model model = new Model();
+    private final MutableLiveData<Model> liveData = new MutableLiveData<>();
     private final ThreadPoolExecutor executor = new ThreadPoolExecutor(2, 8, 60, TimeUnit.SECONDS,
             new LinkedBlockingQueue<>());
 

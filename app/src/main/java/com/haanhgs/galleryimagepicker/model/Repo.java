@@ -1,4 +1,4 @@
-package com.haanhgs.galleryimagepicker;
+package com.haanhgs.galleryimagepicker.model;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
-
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
